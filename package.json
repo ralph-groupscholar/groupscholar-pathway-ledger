@@ -1,0 +1,26 @@
+{
+  "name": "groupscholar-pathway-ledger",
+  "version": "1.0.0",
+  "description": "CLI for scholar pathway milestone and risk reporting.",
+  "type": "commonjs",
+  "main": "dist/cli.js",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx src/cli.ts",
+    "start": "node dist/cli.js",
+    "seed:prod": "tsx scripts/seed-prod.ts",
+    "test": "vitest run"
+  },
+  "keywords": ["groupscholar", "scholarship", "analytics"],
+  "author": "Ralph",
+  "license": "MIT",
+  "dependencies": {
+    "pg": "^8.13.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.7",
+    "tsx": "^4.19.2",
+    "typescript": "^5.8.2",
+    "vitest": "^2.1.6"
+  }
+}
