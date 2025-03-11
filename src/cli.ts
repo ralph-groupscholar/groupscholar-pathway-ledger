@@ -1,7 +1,7 @@
 import { withClient } from "./db";
-import { fetchGaps, fetchRiskReport, fetchSummary } from "./queries";
-import { enrichRiskRows, summarizeGaps } from "./report";
-import { formatGaps, formatRisk, formatSummary } from "./format";
+import { fetchGaps, fetchMilestoneGaps, fetchRiskReport, fetchSummary } from "./queries";
+import { enrichRiskRows, summarizeGaps, summarizeMilestoneGaps } from "./report";
+import { formatGaps, formatMilestoneGaps, formatRisk, formatSummary } from "./format";
 
 const args = process.argv.slice(2);
 const command = args[0];
@@ -25,6 +25,9 @@ void (async () => {
       break;
     case "gaps":
       await runGaps();
+      break;
+    case "milestone-gaps":
+      await runMilestoneGaps();
       break;
     default:
       console.error(`Unknown command: ${command}`);
@@ -65,6 +68,15 @@ async function runGaps(): Promise<void> {
   });
 }
 
+async function runMilestoneGaps(): Promise<void> {
+  await withClient(async (client) => {
+    const rows = await fetchMilestoneGaps(client, gapDays, cohort);
+    const summary = summarizeMilestoneGaps(rows);
+    console.log(formatMilestoneGaps(rows));
+    console.log(`\nTotal gaps: ${summary.total} | Missing milestones: ${summary.missing}`);
+  });
+}
+
 function getArgValue(flag: string): string | undefined {
   const index = args.indexOf(flag);
   if (index === -1) return undefined;
@@ -81,6 +93,7 @@ Commands:
   summary   Cohort/status summary counts
   risks     Risk severity rollup with touchpoint penalty
   gaps      Engagement gaps based on last touchpoint date
+  milestone-gaps  Milestone gaps based on last milestone date
 
 Options:
   --cohort <name>   Filter to a cohort (optional)

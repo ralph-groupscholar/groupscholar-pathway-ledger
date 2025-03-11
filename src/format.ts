@@ -1,4 +1,4 @@
-import { GapRow, SummaryRow } from "./types";
+import { GapRow, MilestoneGapRow, SummaryRow } from "./types";
 import { RiskTier } from "./report";
 
 export function formatSummary(rows: SummaryRow[]): string {
@@ -38,6 +38,23 @@ export function formatGaps(rows: GapRow[]): string {
   for (const row of rows) {
     lines.push(
       `${row.full_name} | ${row.cohort} | ${row.status} | ${row.last_touchpoint ?? "none"} | ${row.days_since_touchpoint ?? "n/a"}`
+    );
+  }
+
+  return lines.join("\n");
+}
+
+export function formatMilestoneGaps(rows: MilestoneGapRow[]): string {
+  if (rows.length === 0) return "No milestone gaps found.";
+
+  const lines = [
+    "Name | Cohort | Status | Last Milestone | Days Since | Milestones",
+    "---|---|---|---|---|---"
+  ];
+
+  for (const row of rows) {
+    lines.push(
+      `${row.full_name} | ${row.cohort} | ${row.status} | ${row.last_milestone ?? "none"} | ${row.days_since_milestone ?? "n/a"} | ${row.milestone_count}`
     );
   }
 

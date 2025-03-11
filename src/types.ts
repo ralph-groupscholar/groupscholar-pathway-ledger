@@ -23,3 +23,13 @@ export type GapRow = {
   last_touchpoint: string | null;
   days_since_touchpoint: number | null;
 };
+
+export type MilestoneGapRow = {
+  scholar_id: string;
+  full_name: string;
+  cohort: string;
+  status: string;
+  last_milestone: string | null;
+  days_since_milestone: number | null;
+  milestone_count: number;
+};

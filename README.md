@@ -6,6 +6,7 @@ CLI for tracking scholar pathway milestones, engagement gaps, and risk rollups f
 - Cohort/status summaries for quick pipeline checks.
 - Risk rollups that combine severity signals with touchpoint gap penalties.
 - Engagement gap detection based on last touchpoint date.
+- Milestone gap detection based on last recorded milestone.
 - Seed script for production schema and sample data.
 
 ## Tech Stack
@@ -29,6 +30,7 @@ CLI for tracking scholar pathway milestones, engagement gaps, and risk rollups f
 npm run dev -- summary --cohort "Cohort 2024"
 npm run dev -- risks
 npm run dev -- gaps --gap-days 45
+npm run dev -- milestone-gaps --gap-days 90
 ```
 
 ## Seed Production Data

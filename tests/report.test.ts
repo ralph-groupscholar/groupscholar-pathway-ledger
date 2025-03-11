@@ -1,6 +1,13 @@
 import { describe, expect, it } from "vitest";
-import { computeRiskScore, daysBetween, enrichRiskRows, riskTier, summarizeGaps } from "../src/report";
-import { GapRow, RiskRow } from "../src/types";
+import {
+  computeRiskScore,
+  daysBetween,
+  enrichRiskRows,
+  riskTier,
+  summarizeGaps,
+  summarizeMilestoneGaps
+} from "../src/report";
+import { GapRow, MilestoneGapRow, RiskRow } from "../src/types";
 
 describe("report helpers", () => {
   it("computes days between two dates", () => {
@@ -68,6 +75,33 @@ describe("report helpers", () => {
     ];
 
     const summary = summarizeGaps(gaps);
+    expect(summary.total).toBe(2);
+    expect(summary.missing).toBe(1);
+  });
+
+  it("summarizes milestone gaps", () => {
+    const gaps: MilestoneGapRow[] = [
+      {
+        scholar_id: "sch_010",
+        full_name: "Zoe Kim",
+        cohort: "Cohort 2024",
+        status: "active",
+        last_milestone: null,
+        days_since_milestone: null,
+        milestone_count: 0
+      },
+      {
+        scholar_id: "sch_011",
+        full_name: "Omar Silva",
+        cohort: "Cohort 2025",
+        status: "active",
+        last_milestone: "2025-09-01",
+        days_since_milestone: 80,
+        milestone_count: 2
+      }
+    ];
+
+    const summary = summarizeMilestoneGaps(gaps);
     expect(summary.total).toBe(2);
     expect(summary.missing).toBe(1);
   });

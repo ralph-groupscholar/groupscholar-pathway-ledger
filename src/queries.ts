@@ -1,5 +1,5 @@
 import { Client } from "pg";
-import { GapRow, RiskRow, SummaryRow } from "./types";
+import { GapRow, MilestoneGapRow, RiskRow, SummaryRow } from "./types";
 
 const SCHEMA = "gs_pathway_ledger";
 
@@ -71,4 +71,35 @@ export async function fetchGaps(
   );
 
   return result.rows as GapRow[];
+}
+
+export async function fetchMilestoneGaps(
+  client: Client,
+  gapDays: number,
+  cohort?: string
+): Promise<MilestoneGapRow[]> {
+  const result = await client.query(
+    `
+    SELECT
+      s.scholar_id,
+      s.full_name,
+      s.cohort,
+      s.status,
+      MAX(m.achieved_on) AS last_milestone,
+      CASE
+        WHEN MAX(m.achieved_on) IS NULL THEN NULL
+        ELSE (CURRENT_DATE - MAX(m.achieved_on))::int
+      END AS days_since_milestone,
+      COUNT(m.milestone_id)::int AS milestone_count
+    FROM ${SCHEMA}.scholars s
+    LEFT JOIN ${SCHEMA}.milestones m ON m.scholar_id = s.scholar_id
+    WHERE ($2::text IS NULL OR s.cohort = $2)
+    GROUP BY s.scholar_id, s.full_name, s.cohort, s.status
+    HAVING MAX(m.achieved_on) IS NULL OR MAX(m.achieved_on) < (CURRENT_DATE - ($1 * INTERVAL '1 day'))
+    ORDER BY days_since_milestone DESC NULLS FIRST;
+    `,
+    [gapDays, cohort ?? null]
+  );
+
+  return result.rows as MilestoneGapRow[];
 }

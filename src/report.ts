@@ -1,4 +1,4 @@
-import { GapRow, RiskRow } from "./types";
+import { GapRow, MilestoneGapRow, RiskRow } from "./types";
 
 export type RiskTier = "low" | "medium" | "high";
 
@@ -35,6 +35,13 @@ export function enrichRiskRows(
 
 export function summarizeGaps(rows: GapRow[]): { total: number; missing: number } {
   const missing = rows.filter((row) => row.last_touchpoint === null).length;
+  return { total: rows.length, missing };
+}
+
+export function summarizeMilestoneGaps(
+  rows: MilestoneGapRow[]
+): { total: number; missing: number } {
+  const missing = rows.filter((row) => row.last_milestone === null).length;
   return { total: rows.length, missing };
 }
 
